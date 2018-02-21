@@ -46,6 +46,8 @@ CSR
 ---
 Format code is ``csr``. See the `Scipy page on CSR <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html>`_.
 
+This format is a sub-format of CSD.
+
 Must provide at least the following extra properties:
 
 * ``data``
@@ -63,6 +65,8 @@ CSC
 ---
 Format code is ``csc``. See the `Scipy page on CSC <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html>`_.
 
+This format is a sub-format of CSD.
+
 Must provide at least the following extra properties:
 
 * ``data``
@@ -79,6 +83,8 @@ Optionally, implementations can provide a ``tocoo()`` method to convert the arra
 COO
 ---
 Format code is ``coo``. See the `Scipy page on COO <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html>`_.
+
+This format is a sub-format of CSD.
 
 Must provide at least the following extra properties:
 
