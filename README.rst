@@ -7,26 +7,28 @@ interface will have to define what exactly the project or an operation requires.
 
 Format-Agnostic Functions
 =========================
-.. rubric:: Checking if an object is an ``sarray``
+Checking if an object is an ``sarray``
+--------------------------------------
 
 Implementation objects should have an attribute of ``__is_sarray__`` such that ``bool(object.__is_sarray__)``
 evaluates to ``True`` if they implement this interface. Code to check if something is an ``sarray``
 will be of the form. Only if the attribute exists and evaluates to ``True`` will the array be
-considered an ``sarray``. Any errors during this conversion will be propagated up.
+considered an ``sarray``. Any errors during this conversion will be propagated up.::
 
-.. code-block:: python
+
    if getattr(obj, '__is_sarray__', False):
        # Do something with sarray
    else:
        # Error handling code/do something else
 
-.. rubric:: Checking the format of an ``sarray``
+Checking if an object is an ``sarray``
+--------------------------------------
 Implementation objects must have a ``format`` attribute that should be a Python string. It
 should specify the *most specific* format of this array. For a description of the formats
 supported by this set of protocols, read the section on formats. It is completely up to the
-implementation which formats it supports.
+implementation which formats it supports.::
 
-.. code-block:: python
+
    if getattr(obj, 'format', None) == format:
        # Format-specific codes.
 
@@ -50,7 +52,7 @@ Must provide at least the following extra properties:
 * ``indices``
 * ``indptr``
 
-All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray``s.
+All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray`` objects.
 
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
 CSD conventions are followed where *only* the columns (``axis=ndim-1``) are uncompressed.
@@ -67,7 +69,7 @@ Must provide at least the following extra properties:
 * ``indices``
 * ``indptr``
 
-All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray``s.
+All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray`` objects.
 
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
 CSD conventions are followed where *only* the rows (``axis=ndim-2``) are uncompressed.
@@ -83,7 +85,7 @@ Must provide at least the following extra properties:
 * ``data``
 * ``coords``
 
-All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray``s.
+All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray`` objects.
 
 ``rows`` on the Scipy page corresponds to ``coords[-2]``  and ``cols`` to ``coords[-1]``.
 
