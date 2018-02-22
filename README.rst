@@ -32,6 +32,15 @@ implementation which formats it supports.::
    if getattr(obj, 'format', None) == format:
        # Format-specific codes.
 
+Sub-formats do not necessarily need to implement all the things required by super-formats.
+Super-formats are provided so that implementations can be unified; Nor do super-formats need
+to handle all cases for sub-formats. However; if a certain format code is returned, then it
+should implement everything that particular format requires.
+
+A library must be able to convert between all formats it supports with an ``asformat()``
+method which takes a single argument: the format code. Unsupported formats should raise a
+``ValueError``.
+
 Universally Supported Attributes
 --------------------------------
 All implementations must support the following ``ndarray`` attributes at minimum.
@@ -46,9 +55,9 @@ CSR
 ---
 Format code is ``csr``. See the `Scipy page on CSR <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html>`_.
 
-This format is a sub-format of CSD.
+This format is a sub-format of CSD and BSR.
 
-Must provide at least the following extra properties:
+Must provide at least the following extra attributes:
 
 * ``data``
 * ``indices``
@@ -65,9 +74,9 @@ CSC
 ---
 Format code is ``csc``. See the `Scipy page on CSC <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html>`_.
 
-This format is a sub-format of CSD.
+This format is a sub-format of CSD and BSC.
 
-Must provide at least the following extra properties:
+Must provide at least the following extra attributes:
 
 * ``data``
 * ``indices``
@@ -84,9 +93,9 @@ COO
 ---
 Format code is ``coo``. See the `Scipy page on COO <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html>`_.
 
-This format is a sub-format of CSD.
+This format is a sub-format of CSD and BOO.
 
-Must provide at least the following extra properties:
+Must provide at least the following extra attributes:
 
 * ``data``
 * ``coords``
@@ -98,3 +107,44 @@ All of these must follow the `array interface <array_interface>`_, but do not ne
 ``coords`` is a ``(ndim, nnz)`` shaped array that contains the coordinates of the nonzero elements.
 
 .. _array_interface: https://docs.scipy.org/doc/numpy/reference/arrays.interface.html
+
+CSD
+---
+Format code is ``csd``. An acronym for Compressed Sparse Dimensions. A generalization of CSR, CSC and COO.
+
+This format is a sub-format of BSD.
+
+* CSR is CSD with all axes compressed except ``ndim - 1``
+* CSC is CSD with all axes compressed except ``ndim - 2``
+* COO is CSD with no axes compressed.
+
+Mandatory: CSD can store any number of non-compressed axes in ``coords`` and any number of compressed
+axes in ``indptr`` (where these axes will be linearized before being compressed). Additionally,
+it exposes an extra attribute, ``compressed_axes`` which lists the compressed axes *in order* in a ``tuple[int]``.
+It also exposes ``data`` (same as above).
+
+Optional: It should provide an ``indices`` attribute which must be ``coords[0]`` iff if ``len(compressed_axes) = 1``
+and raise a ``ValueError`` otherwise.
+
+BSR, BSC, BOO, and BSD
+----------------------
+These acronyms aren't (strictly speaking) correct, but they are keeping in line with current
+conventions.
+
+See `Scipy page on BSR <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.bsr_matrix.html>`_.
+
+They represent Block Compressed Row, Block Compressed Column, Block Coordinate and Block Compressed
+Dimensions respectively. An implementation can implement any combination of these it so chooses.
+
+CSR, CSC, COO, and CSD are sub-formats of these for a block size of `(1,) * ndim`.
+
+Mandatory: The only difference with the above is that certain dimensions are in blocks.
+``data`` in this case is a ``(nnz_blocks * block_size)`` shaped array.
+
+``coords``, ``indices``, ``indptr`` should all be divided by the block size where appropriate
+so they address blocks and not elements.
+
+It also provides a ``blocksize`` attribute, which is ``tuple[int] (ndim,)``.
+
+Optional: It should provide a ``blockdata`` attribute which will be simply ``data.reshape((-1,) +
+blocksize)``.
