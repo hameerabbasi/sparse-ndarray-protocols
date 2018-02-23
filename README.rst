@@ -179,6 +179,8 @@ LIL is a write-only format by default, although implementations can implement re
 It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
 C-ordered indices.
 
+See the `Scipy page on LIL <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html>`_.
+
 BLIL
 ----
 LIL is a write-only format by default, although implementations can implement reads if they so wish.
@@ -193,7 +195,7 @@ DIA must have the following additonal properties:
 * ``data``
 * ``offsets``
 
-See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html>`_.
+See the `Scipy page on DIA <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dia_matrix.html>`_.
 
 BDIA
 ----
