@@ -61,6 +61,7 @@ argument, and all others as kwargs. For example, for CSR, both of the following 
 
    new_obj = type(obj)((data, indices, indptr), shape=shape) # If obj is CSR
    new_obj = type(obj).gettype('csr')((data, indices, indptr), shape=shape) # Arbitrary sarray type
+   new_obj = obj.gettype('csr')((data, indices, indptr), shape=shape) # Should also work
 
 
 Universally Supported Attributes
