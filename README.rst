@@ -59,8 +59,8 @@ Constructing a specific/generic format
 The types of all formats must provide constructors that take all the mandatory array properties as a tuple in the first
 argument, and all others as kwargs. For example, for CSR, both of the following would need to work. ::
 
-   new_obj = type(obj)((data, indices, indptr), shape=shape)
-   new_obj = type(obj).gettype('csr')((data, indices, indptr), shape=shape)
+   new_obj = type(obj)((data, indices, indptr), shape=shape) # If obj is CSR
+   new_obj = type(obj).gettype('csr')((data, indices, indptr), shape=shape) # Arbitrary sarray type
 
 
 Universally Supported Attributes
