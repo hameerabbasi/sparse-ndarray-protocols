@@ -41,8 +41,11 @@ to handle all cases for sub-formats. However; if a certain format code is return
 should implement everything that particular format requires.
 
 A library must be able to convert between all formats it supports with an ``asformat()``
-method which takes a single argument: the format code. Unsupported formats should raise a
-``ValueError``.
+method which takes a single argument by default: the format code. Unsupported formats should
+raise a ``ValueError``.
+
+All formats must provide constructors that take all the mandatory array properties as a tuple in the first
+argument, and all others as kwargs.
 
 Universally Supported Attributes
 --------------------------------
@@ -69,9 +72,7 @@ Must provide at least the following extra attributes:
 All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray`` objects.
 
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
-CSD conventions are followed where *only* the columns (``axis=ndim-1``) are uncompressed.
-
-Optionally, implementations can provide a ``tocsr()`` method to convert the array to CSR.
+CSD conventions are followed where *only* the rows (``axis=ndim-2``) are uncompressed.
 
 CSC
 ---
@@ -88,9 +89,7 @@ Must provide at least the following extra attributes:
 All of these must follow the `array interface <array_interface>`_, but do not need to be ``ndarray`` objects.
 
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
-CSD conventions are followed where *only* the rows (``axis=ndim-2``) are uncompressed.
-
-Optionally, implementations can provide a ``tocoo()`` method to convert the array to CSR.
+CSD conventions are followed where *only* the columns (``axis=ndim-1``) are uncompressed.
 
 COO
 ---
@@ -117,17 +116,19 @@ An acronym for Compressed Sparse Dimensions. A generalization of CSR, CSC and CO
 
 This format is a sub-format of BSD.
 
-* CSR is CSD with all axes compressed except ``ndim - 1``
-* CSC is CSD with all axes compressed except ``ndim - 2``
+* CSR is CSD with all axes compressed except ``ndim - 2``
+* CSC is CSD with all axes compressed except ``ndim - 1``
 * COO is CSD with no axes compressed.
 
 Mandatory: CSD can store any number of non-compressed axes in ``coords`` and any number of compressed
 axes in ``indptr`` (where these axes will be linearized before being compressed). Additionally,
-it exposes an extra attribute, ``compressed_axes`` which lists the compressed axes *in order* in a ``tuple[int]``.
+it exposes an extra attribute, ``compressedaxes`` which lists the compressed axes *in order* in a ``tuple[int]``.
 It also exposes ``data`` (same as above).
 
 Optional: It should provide an ``indices`` attribute which must be ``coords[0]`` iff if ``len(compressed_axes) = 1``
 and raise a ``ValueError`` otherwise.
+
+``asformat`` will take an additional mandatory argument: ``compressedaxes``.
 
 BSR, BSC, BOO, and BSD
 ----------------------
@@ -149,5 +150,52 @@ so they address blocks and not elements.
 
 It also provides a ``blocksize`` attribute, which is ``tuple[int] (ndim,)``.
 
+``asformat`` will take an additional optional argument: ``blocksize``, along with any arguments
+required for sub-formats. By default, the block size will not be changed on conversion.
+
 Optional: It should provide a ``blockdata`` attribute which will be simply ``data.reshape((-1,) +
 blocksize)``.
+
+Block formats must provide a ``__is_bsparse__`` (abbreviation for Is Block Sparse) attribute that
+checks for block format storage. If the returned format is non-block, this must also evaluate to
+``False`` or not be present.
+
+DOK
+---
+DOK is a read-write format by default. It must implement ``__getitem__`` and ``__setitem__`` for
+individual items.
+
+See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dok_matrix.html>`_.
+
+BDOK
+----
+BDOK is read-write, and supports  ``__getitem__`` and ``__setitem__`` for  values that only read from or
+affect a single block respectively. It must also follow block matrix conventions. This is a super format of
+DOK.
+
+LIL
+---
+LIL is a write-only format by default, although implementations can implement reads if they so wish.
+It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
+C-ordered indices.
+
+BLIL
+----
+LIL is a write-only format by default, although implementations can implement reads if they so wish.
+It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
+C-ordered indices of blocks. It must also follow block matrix conventions. This is a super-format of
+LIL.
+
+DIA
+---
+DIA must have the following additonal properties:
+
+* ``data``
+* ``offsets``
+
+See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html>`_.
+
+BDIA
+----
+The block extension for DIA. ``data`` must be of the size ``(number_of_blocks_in_main_diagonal, block_size)``.
+Must follow block format conventions.
