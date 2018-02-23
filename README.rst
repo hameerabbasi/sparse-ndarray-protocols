@@ -21,15 +21,15 @@ considered an ``sarray``. Any errors during this conversion will be propagated u
    else:
        # Error handling code/do something else
 
-Checking if an object is an ``sarray``
---------------------------------------
+Checking the format of an ``sarray``
+------------------------------------
 Implementation objects must have a ``format`` attribute that should be a Python string. It
 should specify the *most specific* format of this array. For a description of the formats
 supported by this set of protocols, read the section on formats. It is completely up to the
 implementation which formats it supports.::
 
 
-   if getattr(obj, 'format', None) == format:
+   if obj.format == format:
        # Format-specific codes.
 
 
