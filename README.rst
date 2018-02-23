@@ -47,6 +47,11 @@ raise a ``ValueError``.
 All formats must provide constructors that take all the mandatory array properties as a tuple in the first
 argument, and all others as kwargs.
 
+For example, for CSR, the following would need to work.::
+
+   new_obj = type(obj)((data, indices, indptr), shape=shape)
+
+
 Universally Supported Attributes
 --------------------------------
 All implementations must support the following ``ndarray`` attributes at minimum.
