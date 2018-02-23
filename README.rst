@@ -13,7 +13,7 @@ Checking if an object is an ``sarray``
 Implementation objects should have an attribute of ``__is_sarray__`` such that ``bool(object.__is_sarray__)``
 evaluates to ``True`` if they implement this interface. Code to check if something is an ``sarray``
 will be of the form. Only if the attribute exists and evaluates to ``True`` will the array be
-considered an ``sarray``. Any errors during this conversion will be propagated up.::
+considered an ``sarray``. Any errors during this conversion will be propagated up. ::
 
 
    if getattr(obj, '__is_sarray__', False):
@@ -26,12 +26,11 @@ Checking the format of an ``sarray``
 Implementation objects must have a ``format`` attribute that should be a Python string. It
 should specify the *most specific* format of this array. For a description of the formats
 supported by this set of protocols, read the section on formats. It is completely up to the
-implementation which formats it supports.::
+implementation which formats it supports. ::
 
 
    if obj.format == format:
        # Format-specific codes.
-
 
 The format code is the lowercase abbreviation for the format in all cases.
 
@@ -47,9 +46,21 @@ raise a ``ValueError``.
 All formats must provide constructors that take all the mandatory array properties as a tuple in the first
 argument, and all others as kwargs.
 
-For example, for CSR, the following would need to work.::
+Getting a type for a specific format
+------------------------------------
+All ``sarray`` types must implement a static ``gettype(format)`` method, which will give the type for that
+specific format for the given implementation. For example, the following code should return the type
+for the CSR implementation. ::
+
+   type(obj).gettype('csr')
+
+Constructing a specific/generic format
+--------------------------------------
+The types of all formats must provide constructors that take all the mandatory array properties as a tuple in the first
+argument, and all others as kwargs. For example, for CSR, both of the following would need to work. ::
 
    new_obj = type(obj)((data, indices, indptr), shape=shape)
+   new_obj = type(obj).gettype('csr')((data, indices, indptr), shape=shape)
 
 
 Universally Supported Attributes
