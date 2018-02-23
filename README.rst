@@ -197,5 +197,5 @@ See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated
 
 BDIA
 ----
-The block extension for DIA. ``data`` must be of the size ``(number_of_blocks_in_main_diagonal, block_size)``.
+The block extension for DIA. ``data`` must be of the size ``(number_of_blocks_in_main_diagonal * block_size)``.
 Must follow block format conventions.
