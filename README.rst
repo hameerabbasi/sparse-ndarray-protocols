@@ -149,16 +149,16 @@ Format-Agnostic Functions
 Checking if an object is a sparse array
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Implementation objects should have an attribute of ``__is_sarray__`` such that ``bool(object.__is_sparray__)``
-evaluates to ``True`` if they implement this interface. Code to check if something is an ``sarray``
+Implementation objects should have an attribute of ``__is_sarray__`` such that ``bool(object.__is_spparray__)``
+evaluates to ``True`` if they implement this interface. Code to check if something is a sparse array
 will be of the form. Only if the attribute exists and evaluates to ``True`` will the array be
 considered an sparse array. Any errors during this conversion will be propagated up. The code to check if
 something is a sparse array will look like the following:
 
 .. code-block:: python
 
-   if getattr(obj, '__is_sarray__', None):
-       # Do something with sarray
+   if getattr(obj, '__is_sparray__', None):
+       # Do something with sparse array
    else:
        # Error handling code/do something else
 
