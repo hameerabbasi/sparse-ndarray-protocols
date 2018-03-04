@@ -49,8 +49,6 @@ Scientific PEP -- Protocols for Sparse `ndarray` Formats
       * Point to MATLAB support for sparse arrays.
       * pydata/sparse
       * PySparse (not ideal)
-      * Other:
-         * scikit.optimization (class based, no webpage (download from PyPI)).
    * Concerns
       * `sparray` classes should have a unified protocol.
       * Current `spmatrix` classes follow `np.matrix` which is not ideal.
@@ -107,6 +105,26 @@ The proposed interface will provide
 - standard constructors,
 - a shape attribute,
 - and format specific attributes.
+
+Existing Work
+-------------
+
+* There is some work ongoing in `pydata/sparse <https://github.com/pydata/sparse>`_ to make this a reality.
+* `MATLAB supports sparse arrays <https://de.mathworks.com/help/matlab/ref/sparse.htm>`_.
+* `An implementation of COO by CJ Carey <https://github.com/perimosocordiae/sparray>`_
+* `An implementation of DOK by Evgeni Burovski <https://github.com/ev-br/sparr>`_
+* `An implementation by Nick R. Papior <https://github.com/zerothi/sisl/blob/master/sisl/sparse.py>`_
+
+Open Issues
+-----------
+
+* `scipy/scipy#8162 <https://github.com/scipy/scipy/issues/8162>`_
+* `dask/dask-ml#123 <https://github.com/dask/dask-ml/issues/123>`_
+* `gammapy/gammapy#1332 <https://github.com/gammapy/gammapy/issues/1332>`_
+* `pangeo-data/pangeo#120 <https://github.com/pangeo-data/pangeo/issues/120>`_
+
+.. note::
+   Find more issues to add here.
 
 Enhancements
 ============
@@ -213,7 +231,7 @@ Proposed Formats
 ----------------
 
 CSR
----
+^^^
 
 See the `Scipy page on CSR <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csr_matrix.html>`_.
 
@@ -231,7 +249,7 @@ In line with the SciPy conventions for CSR, but with the following exception: If
 CSD conventions are followed where *only* the rows (``axis=ndim-2``) are compressed.
 
 CSC
----
+^^^
 
 See the `Scipy page on CSC <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.csc_matrix.html>`_.
 
@@ -249,7 +267,7 @@ In line with the SciPy conventions for CSR, but with the following exception: If
 CSD conventions are followed where *only* the columns (``axis=ndim-1``) are compressed.
 
 COO
----
+^^^
 
 See the `Scipy page on COO <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.coo_matrix.html>`_.
 
@@ -269,7 +287,7 @@ All of these must follow the `array interface <array_interface>`_, but do not ne
 .. _array_interface: https://docs.scipy.org/doc/numpy/reference/arrays.interface.html
 
 CSD
----
+^^^
 
 An acronym for Compressed Sparse Dimensions. A generalization of CSR, CSC and COO.
 
@@ -290,7 +308,7 @@ and raise a ``ValueError`` otherwise.
 ``asformat`` will take an additional mandatory argument: ``compressedaxes``. By d
 
 BSR, BSC, BOO, and BSD
-----------------------
+^^^^^^^^^^^^^^^^^^^^^^
 
 These acronyms aren't (strictly speaking) correct, but they are keeping in line with current
 conventions.
@@ -321,7 +339,7 @@ checks for block format storage. If the returned format is non-block, this must 
 ``False`` or not be present.
 
 DOK
----
+^^^
 
 DOK is a read-write format by default. It must implement ``__getitem__`` and ``__setitem__`` for
 individual items.
@@ -329,14 +347,14 @@ individual items.
 See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dok_matrix.html>`_.
 
 BDOK
-----
+^^^^
 
 BDOK is read-write, and supports  ``__getitem__`` and ``__setitem__`` for  values that only read from or
 affect a single block respectively. It must also follow block matrix conventions. This is a super format of
 DOK.
 
 LIL
----
+^^^
 
 LIL is a write-only format by default, although implementations can implement reads if they so wish.
 It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
@@ -345,7 +363,7 @@ C-ordered indices.
 See the `Scipy page on LIL <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html>`_.
 
 BLIL
-----
+^^^^
 
 BLIL is a write-only format by default, although implementations can implement reads if they so wish.
 It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
@@ -353,7 +371,7 @@ C-ordered indices of blocks. It must also follow block matrix conventions. This 
 LIL.
 
 DIA
----
+^^^
 
 DIA must have the following additonal properties:
 
@@ -363,8 +381,7 @@ DIA must have the following additonal properties:
 See the `Scipy page on DIA <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dia_matrix.html>`_.
 
 BDIA
-----
+^^^^
 
 The block extension for DIA. ``data`` must be of the shape ``(number_of_blocks_in_main_diagonal * block_size,)``.
 Must follow block format conventions.
-
