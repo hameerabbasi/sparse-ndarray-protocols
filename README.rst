@@ -6,6 +6,7 @@
    * If this had been present when development of your library began, how would have it influenced your library?
    * Libraries: Dask, XArray, Dask-ML, scikit-learn, Pysparse, others.
 
+========================================================
 Scientific PEP -- Protocols for Sparse `ndarray` Formats
 ========================================================
 
@@ -123,7 +124,7 @@ Open Issues
 * `gammapy/gammapy#1332 <https://github.com/gammapy/gammapy/issues/1332>`_
 * `pangeo-data/pangeo#120 <https://github.com/pangeo-data/pangeo/issues/120>`_
 
-.. note::
+.. note
    Find more issues to add here.
 
 Enhancements
