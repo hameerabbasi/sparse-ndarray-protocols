@@ -200,7 +200,7 @@ return ``NotImplemented``.
 Getting the type of a format
 ----------------------------
 
-All types of sparse arrays must implement a ``get_type(format)`` method that would take in the
+All types of sparse arrays must implement a ``gettype(format)`` method that would take in the
 format code, and return the type that supports all operations of that format. For example, to
 get the type relating to CSR, both of the following code would work:
 
