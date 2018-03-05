@@ -123,6 +123,7 @@ Open Issues
 * `dask/dask-ml#123 <https://github.com/dask/dask-ml/issues/123>`_
 * `gammapy/gammapy#1332 <https://github.com/gammapy/gammapy/issues/1332>`_
 * `pangeo-data/pangeo#120 <https://github.com/pangeo-data/pangeo/issues/120>`_
+* `TileDB-Inc/TileDB-Py#23 <https://github.com/TileDB-Inc/TileDB-Py/issues/23>`_
 
 .. note
    Find more issues to add here.
