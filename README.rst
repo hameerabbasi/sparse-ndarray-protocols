@@ -6,9 +6,9 @@
    * If this had been present when development of your library began, how would have it influenced your library?
    * Libraries: Dask, XArray, Dask-ML, scikit-learn, Pysparse, others.
 
-========================================================
-Scientific PEP -- Protocols for Sparse `ndarray` Formats
-========================================================
+==========================================================
+Scientific PEP -- Protocols for Sparse ``ndarray`` Formats
+==========================================================
 
 .. outline
    * Abstract
@@ -242,6 +242,19 @@ And for DOK, the following should work:
 Proposed Formats
 ----------------
 
+Implementing any given format is purely optional for a given implementation. Any operations with a given format
+should return ``NotImplemented`` if tried.
+
+Ideally, if all formats are to be implemented, only implementations for the following formats will be needed,
+and the rest can just be subclassed stubs relying on their respective super-formats.
+
+* BSD
+* BDOK
+* BLIL
+* BDIA
+
+So the number of formats that actually need to be implemented in order to support everything is just 4.
+
 CSR
 ^^^
 
@@ -260,6 +273,11 @@ All of these must follow the `array interface <array_interface>`_, but do not ne
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
 CSD conventions are followed where *only* the rows (``axis=ndim-2``) are compressed.
 
+Potential Uses
+""""""""""""""
+
+This format is important as many linear algebra and machine learning operations rely on it.
+
 CSC
 ^^^
 
@@ -277,6 +295,11 @@ All of these must follow the `array interface <array_interface>`_, but do not ne
 
 In line with the SciPy conventions for CSR, but with the following exception: If ``ndim > 2`` is supported, then
 CSD conventions are followed where *only* the columns (``axis=ndim-1``) are compressed.
+
+Potential Uses
+""""""""""""""
+
+This format is important as many linear algebra and machine learning operations rely on it.
 
 COO
 ^^^
@@ -298,6 +321,11 @@ All of these must follow the `array interface <array_interface>`_, but do not ne
 
 .. _array_interface: https://docs.scipy.org/doc/numpy/reference/arrays.interface.html
 
+Potential Uses
+""""""""""""""
+
+This format is important as it has a simplified representation of coordinates.
+
 CSD
 ^^^
 
@@ -318,6 +346,13 @@ Optional: It should provide an ``indices`` attribute which must be ``coords[0]``
 and raise a ``ValueError`` otherwise.
 
 ``asformat`` will take an additional mandatory argument: ``compressedaxes``.
+
+Potential Uses
+""""""""""""""
+
+This format is important as it can be used to unify CSR, CSC, COO and then some. The non-compressed axes
+have better support for fast broadcasting, but the compressed axes are faster for other operations such
+as ``dot`` and ``tensordot``.
 
 BSR, BSC, BOO, and BSD
 ^^^^^^^^^^^^^^^^^^^^^^
@@ -350,6 +385,14 @@ Block formats must provide a ``__is_bsparse__`` (abbreviation for Is Block Spars
 checks for block format storage. If the returned format is non-block, this must also evaluate to
 ``False`` or not be present.
 
+Potential Uses
+""""""""""""""
+
+Block arrays come up often in scientific applications, particularly in ``kron(sparse, dense)``
+type operations which are common in many fields. This allows the benefits of BSD along with many
+of the benefits of block arrays. See the `Wikipedia article on block matrices.
+<https://en.wikipedia.org/wiki/Block_matrix>`_
+
 DOK
 ^^^
 
@@ -358,12 +401,23 @@ individual items.
 
 See the `Scipy page on DOK <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dok_matrix.html>`_.
 
+Potential Uses
+""""""""""""""
+
+This format can be used to construct sparse arrays fairly efficiently. It can also be useful for
+algorithms that build or work with dynamic graphs.
+
 BDOK
 ^^^^
 
 BDOK is read-write, and supports  ``__getitem__`` and ``__setitem__`` for  values that only read from or
 affect a single block respectively. It must also follow block matrix conventions. This is a super format of
 DOK.
+
+Potential Uses
+""""""""""""""
+
+This format can be used to construct block sparse arrays fairly efficiently.
 
 LIL
 ^^^
@@ -374,6 +428,12 @@ C-ordered indices.
 
 See the `Scipy page on LIL <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.lil_matrix.html>`_.
 
+Potential Uses
+""""""""""""""
+
+This format can be used to construct sparse arrays more efficiently than DOK where we know that we are iterating
+in order.
+
 BLIL
 ^^^^
 
@@ -381,6 +441,12 @@ BLIL is a write-only format by default, although implementations can implement r
 It must implement ``__setitem__`` such that if ``__setitem__`` can only be called in succession with
 C-ordered indices of blocks. It must also follow block matrix conventions. This is a super-format of
 LIL.
+
+Potential Uses
+""""""""""""""
+
+This format can be used to construct block sparse arrays more efficiently than BDOK where we know that
+we are iterating in order.
 
 DIA
 ^^^
@@ -392,8 +458,21 @@ DIA must have the following additonal properties:
 
 See the `Scipy page on DIA <https://docs.scipy.org/doc/scipy/reference/generated/scipy.sparse.dia_matrix.html>`_.
 
+Potential Uses
+""""""""""""""
+
+Diagonal matrices come up fairly often in scientific computing e.g. eigendecomposition and SVD.
+This is to cater for those use-cases. Some uses also need tridiagonal matrices.
+
 BDIA
 ^^^^
 
 The block extension for DIA. ``data`` must be of the shape ``(number_of_blocks_in_main_diagonal * block_size,)``.
 Must follow block format conventions.
+
+Potential Uses
+""""""""""""""
+
+Block diagonal or block tridiagonal matrices are also fairly important in some scientific applications.
+
+
