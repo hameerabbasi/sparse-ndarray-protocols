@@ -174,8 +174,8 @@ All implementations must support the following ``ndarray`` attributes at minimum
 * `dtype <https://docs.scipy.org/doc/numpy/reference/generated/numpy.ndarray.dtype.html>`_
 * __len__
 
-Checking the format of an ``sarray``
-------------------------------------
+Checking the Format of a Sparse Array
+-------------------------------------
 
 Implementation objects must have a ``format`` attribute that should be a Python string. It
 should specify the *most specific* format of this array. For a description of the formats
@@ -184,8 +184,8 @@ implementation which formats it supports.
 
 .. code-block:: python
 
-   if obj.format == format:
-       # Format-specific codes.
+   if obj.format == 'csr':
+       # CSR-specific code.
 
 The format code is the lowercase abbreviation for the format in all cases.
 
@@ -194,9 +194,18 @@ nor do super-formats need to handle all cases for sub-formats. Super-formats are
 that implementations can be unified; However; if a certain format code is returned, then it
 should implement everything that particular format requires.
 
+Converting Between Formats
+--------------------------
+
 A library must be able to convert between all formats it supports with an ``asformat()``
 method which takes a single argument by default: the format code. Unsupported formats should
-return ``NotImplemented``.
+return ``NotImplemented``. The code to convert to a format will look like the following:
+
+.. code-block:: python
+   if obj.format != 'csr':
+       obj = obj.asformat('csr')
+
+   # Do something with CSR
 
 Getting the type of a format
 ----------------------------
