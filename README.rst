@@ -202,6 +202,7 @@ method which takes a single argument by default: the format code. Unsupported fo
 return ``NotImplemented``. The code to convert to a format will look like the following:
 
 .. code-block:: python
+
    if obj.format != 'csr':
        obj = obj.asformat('csr')
 
