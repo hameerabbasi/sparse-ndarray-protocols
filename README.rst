@@ -242,8 +242,8 @@ And for DOK, the following should work:
 Proposed Formats
 ----------------
 
-Implementing any given format is purely optional for a given implementation. Any operations with a given format
-should return ``NotImplemented`` if tried.
+Implementing any given format is purely optional for a given implementation. Any operations with an
+unsupported format should return ``NotImplemented`` if attempted.
 
 Ideally, if all formats are to be implemented, only implementations for the following formats will be needed,
 and the rest can just be subclassed stubs relying on their respective super-formats.
