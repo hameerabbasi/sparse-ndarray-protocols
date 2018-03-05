@@ -316,7 +316,7 @@ It also exposes ``data`` (same as above).
 Optional: It should provide an ``indices`` attribute which must be ``coords[0]`` iff if ``len(compressed_axes) = 1``
 and raise a ``ValueError`` otherwise.
 
-``asformat`` will take an additional mandatory argument: ``compressedaxes``. By d
+``asformat`` will take an additional mandatory argument: ``compressedaxes``.
 
 BSR, BSC, BOO, and BSD
 ^^^^^^^^^^^^^^^^^^^^^^
